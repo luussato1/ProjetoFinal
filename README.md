@@ -60,7 +60,7 @@ Sistema veterinário completo desenvolvido em **Flask** seguindo o padrão **BMV
 
 2. **Navegue até o diretório do projeto**:
    ```powershell
-   cd "c:\Users\lu1zi\Desktop\bmvc_projeto\bmvc_projeto\bmvc_projeto"
+   cd "c:\Users\User\Desktop\bmvc_projeto\bmvc_projeto\bmvc_projeto"
    ```
 
 3. **Instale as dependências** (recomendado criar um ambiente virtual):
@@ -216,7 +216,7 @@ bmvc_projeto/
 ## 👨‍💻 Desenvolvedores
 
 - **Arthur Luiz**
-- **Luiz Henrique**
+- **Luiz Henrique Pessato Da Mota**
 
 ## 📋 Observações para Apresentação
 
@@ -255,8 +255,8 @@ Para dúvidas ou problemas:
 
 ---
 
-### 🏆 Projeto desenvolvido para a disciplina BMVC - Nível 3
+### 🏆 Projeto desenvolvido para a disciplina Orientação e Objetos
 
 **Status**: ✅ Concluído e funcional  
-**Última atualização**: Janeiro 2025
+**Última atualização**: Julho 2025
 
