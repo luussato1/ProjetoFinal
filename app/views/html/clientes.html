@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>👩 Clientes</h2>
+
+<a class="btn" href="{{ url_for('routes.novo_cliente') }}">+ Novo Cliente</a>
+
+<table>
+  <thead>
+    <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Endereço</th>
+        <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in clientes %}
+    <tr>
+        <td>{{ cliente.nome }}</td>
+        <td>{{ cliente.email }}</td>
+        <td>{{ cliente.telefone }}</td>
+        <td>{{ cliente.endereco }}</td>
+        <td>
+            <a class="actions" href="{{ url_for("routes.editar_cliente", cliente_id=cliente.id) }}">Editar</a> |
+            <a class="actions" href="{{ url_for('routes.remover_cliente', cliente_id=cliente.id) }}" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">Excluir</a>
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

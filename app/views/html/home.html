@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Bem-vindo ao PETBUS!</h1>
+      <p>O sistema veterinário que atende seus pets onde você estiver.</p>
+      {% if not session.logged_in %}
+      <a href="{{ url_for('routes.login') }}" class="btn btn-primary">Faça Login para Começar</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="about-us">
+    <h2>Sobre o PETBUS</h2>
+    <p>No PETBUS, nossa missão é conectar tutores de pets a veterinários qualificados, oferecendo um sistema completo para gerenciamento de clientes, animais, consultas e muito mais. Facilitamos o cuidado com a saúde do seu melhor amigo, onde quer que você esteja.</p>
+  </section>
+
+  <section class="features">
+    <h2>Nossos Recursos</h2>
+    <div class="feature-list">
+      <div class="feature-item">
+        <h3>🐕 Gerenciamento de Clientes</h3>
+        <p>Mantenha um registro detalhado de todos os seus clientes e suas informações de contato de forma organizada e segura.</p>
+      </div>
+      <div class="feature-item">
+        <h3>🐱 Cadastro de Animais</h3>
+        <p>Registre todos os pets, incluindo espécie, raça, idade, peso e histórico completo de saúde para melhor acompanhamento.</p>
+      </div>
+      <div class="feature-item">
+        <h3>🩺 Consultas e Histórico</h3>
+        <p>Agende consultas, registre diagnósticos, tratamentos e observações importantes para cada animal.</p>
+      </div>
+      <div class="feature-item">
+        <h3>👩‍⚕️ Controle de Veterinários</h3>
+        <p>Gerencie informações de veterinários, especialidades, CRMV e disponibilidade de forma eficiente.</p>
+      </div>
+      <div class="feature-item">
+        <h3>🔒 Sistema de Login Seguro</h3>
+        <p>Acesso restrito e seguro para administradores e veterinários, garantindo a privacidade dos dados.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="developers">
+    <h2>Desenvolvedores</h2>
+    <p>Este projeto foi desenvolvido com dedicação e carinho por:</p>
+    <ul>
+      <li>Arthur Luiz</li>
+      <li>Luiz Henrique</li>
+    </ul>
+    <p>Agradecemos especialmente ao <strong>Professor Henrique</strong> e aos <strong>monitores</strong> pelo apoio, orientação e conhecimento compartilhado durante todo o desenvolvimento do PETBUS. Sem vocês, este projeto não seria possível!</p>
+  </section>
+{% endblock %}
+
+

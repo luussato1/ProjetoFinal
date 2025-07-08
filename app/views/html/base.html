@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PETBUS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+        <a href="{{ url_for('routes.home') }}"><h1>🐾 PETBUS</h1></a>
+        {% if session.logged_in %}
+        <nav>
+            <a href="{{ url_for('routes.listar_clientes') }}">Clientes</a>
+            <a href="{{ url_for("routes.listar_animais") }}">Animais</a>
+            <a href="{{ url_for('routes.listar_veterinarios') }}">Veterinários</a>
+            <a href="{{ url_for('routes.listar_consultas') }}">Consultas</a>
+            {% if session.is_admin %}
+            <a href="{{ url_for('routes.admin_panel') }}">Admin</a>
+            {% endif %}
+        </nav>
+        <div class="user-info">
+            <span>Olá, {{ session.username }}!</span>
+            <a href="{{ url_for('routes.logout') }}" class="btn btn-logout">Sair</a>
+        </div>
+        {% else %}
+        <div class="login-info">
+            <a href="{{ url_for('routes.login') }}" class="btn">Fazer Login</a>
+        </div>
+        {% endif %}
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="message {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; {{ now.year }} Projeto 2 do BMVC. PetBus. Todos os direitos reservados.</p>
+  </footer>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>🩺 Consultas</h2>
+
+<a class="btn" href="{{ url_for('routes.nova_consulta') }}">+ Nova Consulta</a>
+
+<table>
+  <thead>
+    <tr>
+        <th>Animal ID</th>
+        <th>Veterinário ID</th>
+        <th>Data da Consulta</th>
+        <th>Motivo</th>
+        <th>Diagnóstico</th>
+        <th>Tratamento</th>
+        <th>Observações</th>
+        <th>Valor</th>
+        <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for consulta in consultas %}
+    <tr>
+        <td>{{ consulta.id_animal }}</td>
+        <td>{{ consulta.id_veterinario }}</td>
+        <td>{{ consulta.data_consulta }}</td>
+        <td>{{ consulta.motivo }}</td>
+        <td>{{ consulta.diagnostico }}</td>
+        <td>{{ consulta.tratamento }}</td>
+        <td>{{ consulta.observacoes }}</td>
+        <td>{{ "%.2f" | format(consulta.valor) }}</td>
+        <td>
+            <a class="actions" href="{{ url_for('routes.editar_consulta', consulta_id=consulta.id) }}">Editar</a> |
+            <a class="actions" href="{{ url_for('routes.remover_consulta', consulta_id=consulta.id) }}" onclick="return confirm('Tem certeza que deseja excluir esta consulta?')">Excluir</a>
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

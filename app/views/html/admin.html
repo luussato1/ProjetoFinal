@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-panel">
+    <h2>🔐 Painel Administrativo</h2>
+    <p class="welcome-admin">Bem-vindo, <strong>{{ usuario.nome_completo }}</strong>!</p>
+    
+    <div class="admin-stats">
+        <div class="stat-card">
+            <h3>📊 Estatísticas do Sistema</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">{{ stats.total_clientes }}</span>
+                    <span class="stat-label">Clientes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ stats.total_animais }}</span>
+                    <span class="stat-label">Animais</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ stats.total_veterinarios }}</span>
+                    <span class="stat-label">Veterinários</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ stats.total_consultas }}</span>
+                    <span class="stat-label">Consultas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="admin-actions">
+        <h3>⚙️ Ações Administrativas</h3>
+        <div class="action-buttons">
+            <a href="{{ url_for('routes.listar_clientes') }}" class="btn admin-btn">
+                👥 Gerenciar Clientes
+            </a>
+            <a href="{{ url_for('routes.listar_animais') }}" class="btn admin-btn">
+                🐕 Gerenciar Animais
+            </a>
+            <a href="{{ url_for('routes.listar_veterinarios') }}" class="btn admin-btn">
+                👨‍⚕️ Gerenciar Veterinários
+            </a>
+            <a href="{{ url_for('routes.listar_consultas') }}" class="btn admin-btn">
+                📋 Gerenciar Consultas
+            </a>
+        </div>
+    </div>
+    
+    <div class="system-info">
+        <h3>ℹ️ Informações do Sistema</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <strong>Versão:</strong> BMVC v1.0
+            </div>
+            <div class="info-item">
+                <strong>Último acesso:</strong> {{ now.strftime('%d/%m/%Y às %H:%M') }}
+            </div>
+            <div class="info-item">
+                <strong>Status:</strong> <span class="status-online">Online</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-panel {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.welcome-admin {
+    background: linear-gradient(135deg, #D4748F, #ff8fab);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.admin-stats {
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border: 2px solid #ffcad4;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: #fff0f5;
+    border-radius: 8px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+    color: #D4748F;
+}
+
+.stat-label {
+    display: block;
+    color: #666;
+    margin-top: 5px;
+}
+
+.admin-actions {
+    margin-bottom: 30px;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.admin-btn {
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 1.1em;
+    border-radius: 10px;
+    transition: transform 0.2s;
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+}
+
+.system-info {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.info-item {
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+}
+
+.status-online {
+    color: #28a745;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
