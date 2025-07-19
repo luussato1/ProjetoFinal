@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>👩‍⚕️ Veterinários</h2>
+
+<a class="btn" href="{{ url_for('routes.novo_veterinario') }}">+ Novo Veterinário</a>
+
+<table>
+  <thead>
+    <tr>
+        <th>Nome</th>
+        <th>CRMV</th>
+        <th>Especialidade</th>
+        <th>Telefone</th>
+        <th>Email</th>
+        <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for veterinario in veterinarios %}
+    <tr>
+        <td>{{ veterinario.nome }}</td>
+        <td>{{ veterinario.crmv }}</td>
+        <td>{{ veterinario.especialidade }}</td>
+        <td>{{ veterinario.telefone }}</td>
+        <td>{{ veterinario.email }}</td>
+        <td>
+            <a class="actions" href="{{ url_for("routes.editar_veterinario", veterinario_id=veterinario.id) }}">Editar</a> |          <a class="actions" href="{{ url_for('routes.remover_veterinario', veterinario_id=veterinario.id) }}" onclick="return confirm('Tem certeza que deseja excluir este veterinário?')">Excluir</a>
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

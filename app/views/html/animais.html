@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>🐶 Animais</h2>
+
+<a class="btn" href="{{ url_for('routes.novo_animal') }}">+ Novo Animal</a>
+
+<table>
+  <thead>
+    <tr>
+        <th>Nome</th>
+        <th>Espécie</th>
+        <th>Raça</th>
+        <th>Idade</th>
+        <th>Peso</th>
+        <th>Cliente ID</th>
+        <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for animal in animais %}
+    <tr>
+        <td>{{ animal.nome }}</td>
+        <td>{{ animal.especie }}</td>
+        <td>{{ animal.raca }}</td>
+        <td>{{ animal.idade }}</td>
+        <td>{{ animal.peso }}</td>
+        <td>{{ animal.id_cliente }}</td>
+        <td>
+            <a class="actions" href="{{ url_for("routes.editar_animal", animal_id=animal.id) }}">Editar</a> |
+            <a class="actions" href="{{ url_for('routes.remover_animal', animal_id=animal.id) }}" onclick="return confirm('Tem certeza que deseja excluir este animal?')">Excluir</a>
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

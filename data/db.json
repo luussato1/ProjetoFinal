@@ -1,0 +1,58 @@
+{
+    "clientes": [
+        {
+            "id": "4a90c93d-e146-4551-b57e-4380f20e9b13",
+            "nome": "Jo\u00e3o Silva",
+            "email": "joao@email.com",
+            "telefone": "(11) 99999-9999",
+            "endereco": "Rua das Flores, 123 - S\u00e3o Paulo, SP"
+        },
+        {
+            "id": "f7717a65-01e1-480d-ba6c-3b748f1a0d52",
+            "nome": "lulu",
+            "email": "luizpessato002@gmail.com",
+            "telefone": "(61) 98340-1641",
+            "endereco": "shsn ch112 a"
+        }
+    ],
+    "animais": [
+        {
+            "id": "e57656d9-f317-434c-82da-e12de5dd0577",
+            "nome": "doguin",
+            "especie": "cachorro",
+            "id_cliente": "2",
+            "raca": "pintcher",
+            "idade": 1,
+            "peso": 1.0
+        }
+    ],
+    "veterinarios": [
+        {
+            "id": "c3ef70cf-e355-4226-8857-78d01d0aa99b",
+            "nome": "Jo\u00e3o Silva",
+            "crmv": "1",
+            "especialidade": "medico",
+            "telefone": "(61) 98234-4242",
+            "email": "addadaa@gmail.com"
+        }
+    ],
+    "consultas": [],
+    "usuarios": [
+        {
+            "id": "admin-001",
+            "username": "admin",
+            "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+            "email": "admin@petbus.com",
+            "nome_completo": "Administrador do Sistema",
+            "is_admin": true
+        },
+        {
+            "id": "user-001",
+            "username": "veterinario",
+            "password": "fcf730b6d95236ecd3c9fc2d92d7b6b2bb061514961aec041d6c7a7192f592e4",
+            "email": "vet@petbus.com",
+            "nome_completo": "Dr. Veterin\u00e1rio",
+            "is_admin": false
+        }
+    ]
+}

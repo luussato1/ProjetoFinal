@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{{ '✏️ Editar Consulta' if consulta else '➕ Nova Consulta' }}</h2>
+
+  <form action="{{ action_url }}" method="POST" class="formulario">
+    <label for="id_animal">ID do Animal:</label>
+    <input type="text" id="id_animal" name="id_animal" required value="{{ consulta.id_animal if consulta else '' }}">
+
+    <label for="id_veterinario">ID do Veterinário:</label>
+    <input type="text" id="id_veterinario" name="id_veterinario" required value="{{ consulta.id_veterinario if consulta else '' }}">
+
+    <label for="data_consulta">Data da Consulta:</label>
+    <input type="datetime-local" id="data_consulta" name="data_consulta" value="{{ consulta.data_consulta if consulta else '' }}">
+
+    <label for="motivo">Motivo:</label>
+    <textarea id="motivo" name="motivo" rows="3" required>{{ consulta.motivo if consulta else '' }}</textarea>
+
+    <label for="diagnostico">Diagnóstico:</label>
+    <textarea id="diagnostico" name="diagnostico" rows="3">{{ consulta.diagnostico if consulta else '' }}</textarea>
+
+    <label for="tratamento">Tratamento:</label>
+    <textarea id="tratamento" name="tratamento" rows="3">{{ consulta.tratamento if consulta else '' }}</textarea>
+
+    <label for="observacoes">Observações:</label>
+    <textarea id="observacoes" name="observacoes" rows="3">{{ consulta.observacoes if consulta else '' }}</textarea>
+
+    <label for="valor">Valor:</label>
+    <input type="number" step="0.01" id="valor" name="valor" value="{{ consulta.valor if consulta else '0.00' }}">
+
+    <button type="submit" class="btn">Salvar</button>
+    <a href="{{ url_for('routes.listar_consultas') }}" class="btn cancel">Cancelar</a>
+  </form>
+{% endblock %}
