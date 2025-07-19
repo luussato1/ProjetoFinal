@@ -18,6 +18,13 @@ instance/
 .vscode/
 .idea/
 *.swp
+
+# Git internal files (should not be tracked)
+ORIG_HEAD
+objects/
+refs/heads/
+refs/remotes/
+refs/tags/
 *.swo
 
 # OS
