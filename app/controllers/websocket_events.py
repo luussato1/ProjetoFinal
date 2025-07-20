@@ -6,12 +6,11 @@ from datetime import datetime
 
 @socketio.on("connect")
 def handle_connect():
-    print(f"Cliente conectado: {session.get('username', 'Anônimo')}")
     emit("status", {"msg": f"{session.get('username', 'Usuário')} conectado ao sistema!"})
 
 @socketio.on("disconnect")
 def handle_disconnect():
-    print(f"Cliente desconectado: {session.get('username', 'Anônimo')}")
+    pass
 
 @socketio.on("join")
 def handle_join(data):

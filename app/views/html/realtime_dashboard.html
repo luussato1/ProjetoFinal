@@ -3,6 +3,7 @@
 {% block title %}Dashboard em Tempo Real - PETBUS{% endblock %}
 
 {% block content %}
+
 <div class="realtime-dashboard">
     <div class="dashboard-header">
         <h1>📊 Dashboard em Tempo Real</h1>
@@ -86,272 +87,9 @@
         <button id="test-notification" class="btn btn-info">🧪 Testar Notificação</button>
         <button id="clear-notifications" class="btn btn-warning">🗑️ Limpar Notificações</button>
         <button id="toggle-sound" class="btn btn-secondary">🔊 Som: ON</button>
+        <button id="refresh-stats" class="btn btn-secondary">🔄 Atualizar Dados</button>
     </div>
 </div>
-
-<!-- Estilos específicos para o dashboard -->
-<style>
-.realtime-dashboard {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.dashboard-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 10px;
-}
-
-.connection-status {
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.status-connected {
-    color: #4CAF50;
-}
-
-.status-disconnected {
-    color: #f44336;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.dashboard-card {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e0e0e0;
-}
-
-.dashboard-card h3 {
-    margin-top: 0;
-    color: #333;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
-}
-
-.notifications-container {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    padding: 10px;
-}
-
-.notification-item {
-    padding: 8px;
-    margin-bottom: 8px;
-    border-radius: 5px;
-    border-left: 4px solid #2196F3;
-    background: #f8f9fa;
-    font-size: 14px;
-}
-
-.notification-item.create {
-    border-left-color: #4CAF50;
-}
-
-.notification-item.update {
-    border-left-color: #FF9800;
-}
-
-.notification-item.delete {
-    border-left-color: #f44336;
-}
-
-.activity-item {
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border-left: 4px solid #2196F3;
-    background: #f8f9fa;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.activity-item:hover {
-    background: #e9ecef;
-    transform: translateX(5px);
-}
-
-.activity-item.system {
-    border-left-color: #6f42c1;
-    background: #f8f6ff;
-}
-
-.activity-item.info {
-    border-left-color: #17a2b8;
-    background: #f0f9ff;
-}
-
-.activity-item.success {
-    border-left-color: #28a745;
-    background: #f0fff4;
-}
-
-.activity-item.warning {
-    border-left-color: #ffc107;
-    background: #fffbf0;
-}
-
-.activity-time {
-    font-size: 12px;
-    color: #666;
-    float: right;
-    font-weight: bold;
-}
-
-.activity-text {
-    display: block;
-    margin-right: 60px;
-}
-
-.notification-time {
-    font-size: 12px;
-    color: #666;
-    float: right;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.stat-item {
-    text-align: center;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.stat-number {
-    display: block;
-    font-size: 24px;
-    font-weight: bold;
-    color: #2196F3;
-}
-
-.stat-label {
-    font-size: 12px;
-    color: #666;
-    text-transform: uppercase;
-}
-
-.chat-container {
-    height: 200px;
-    overflow-y: auto;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    background: #fafafa;
-}
-
-.chat-message {
-    margin-bottom: 8px;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-.chat-message.system {
-    background: #e3f2fd;
-    color: #1976d2;
-}
-
-.chat-message.user {
-    background: #e8f5e8;
-    color: #388e3c;
-}
-
-.message-time {
-    font-size: 11px;
-    color: #666;
-    margin-right: 8px;
-}
-
-.chat-input-container {
-    display: flex;
-    gap: 10px;
-}
-
-.chat-input-container input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.users-container {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.user-item {
-    padding: 8px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    background: #f8f9fa;
-}
-
-.user-indicator {
-    margin-right: 8px;
-}
-
-.user-indicator.online {
-    color: #4CAF50;
-}
-
-.user-status {
-    font-size: 12px;
-    color: #666;
-}
-
-.dashboard-controls {
-    text-align: center;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
-}
-
-.dashboard-controls button {
-    margin: 0 10px;
-}
-
-.no-notifications {
-    text-align: center;
-    color: #666;
-    font-style: italic;
-}
-
-@media (max-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .dashboard-controls button {
-        display: block;
-        margin: 10px auto;
-        width: 200px;
-    }
-}
-</style>
 
 <!-- Script WebSocket para o dashboard -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -361,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const socket = io();
     let soundEnabled = true;
     
-    // Elementos do DOM
+    // Elementos DOM com verificação
     const connectionIndicator = document.getElementById('connection-indicator');
     const connectionText = document.getElementById('connection-text');
     const crudNotifications = document.getElementById('crud-notifications');
@@ -369,16 +107,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatInput = document.getElementById('chat-input');
     const sendMessageBtn = document.getElementById('send-message');
     
+    // Verificar se elementos essenciais existem
+    if (!connectionIndicator || !connectionText) {
+        console.warn('Elementos de conexão não encontrados, mas continuando...');
+    }
+    
     // Eventos de conexão
     socket.on('connect', function() {
-        connectionIndicator.className = 'status-connected';
-        connectionText.textContent = 'Conectado';
+        if (connectionIndicator) connectionIndicator.className = 'status-connected';
+        if (connectionText) connectionText.textContent = 'Conectado';
         addChatMessage('Sistema', 'Conectado ao servidor em tempo real', 'system');
     });
     
     socket.on('disconnect', function() {
-        connectionIndicator.className = 'status-disconnected';
-        connectionText.textContent = 'Desconectado';
+        if (connectionIndicator) connectionIndicator.className = 'status-disconnected';
+        if (connectionText) connectionText.textContent = 'Desconectado';
         addChatMessage('Sistema', 'Conexão perdida', 'system');
     });
     
@@ -401,6 +144,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Funções auxiliares
     function addCrudNotification(data) {
+        if (!crudNotifications) return;
+        
         const notificationDiv = document.createElement('div');
         notificationDiv.className = `activity-item ${data.operation}`;
         notificationDiv.innerHTML = `
@@ -420,6 +165,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function addChatMessage(username, message, type, timestamp = null) {
+        if (!chatMessages) return;
+        
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${type}`;
         const time = timestamp || new Date().toLocaleTimeString();
@@ -450,59 +197,79 @@ document.addEventListener('DOMContentLoaded', function() {
     function playNotificationSound() {
         if (soundEnabled) {
             // Criar um beep simples usando Web Audio API
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.3);
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log('Audio não suportado');
+            }
         }
     }
     
-    // Event listeners
-    sendMessageBtn.addEventListener('click', function() {
-        const message = chatInput.value.trim();
-        if (message) {
-            socket.emit('send_message', {
-                message: message,
-                room: 'general'
+    // Event listeners com verificação de existência
+    const refreshBtn = document.getElementById('refresh-stats');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', updateStats);
+    }
+    
+    const testNotBtn = document.getElementById('test-notification');
+    if (testNotBtn) {
+        testNotBtn.addEventListener('click', function() {
+            socket.emit('system_notification', {
+                message: 'Esta é uma notificação de teste do sistema!',
+                type: 'info'
             });
-            chatInput.value = '';
-        }
-    });
-    
-    chatInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            sendMessageBtn.click();
-        }
-    });
-    
-    document.getElementById('refresh-stats').addEventListener('click', updateStats);
-    
-    document.getElementById('test-notification').addEventListener('click', function() {
-        socket.emit('system_notification', {
-            message: 'Esta é uma notificação de teste do sistema!',
-            type: 'info'
         });
-    });
+    }
     
-    document.getElementById('clear-notifications').addEventListener('click', function() {
-        crudNotifications.innerHTML = '<p class="no-notifications">Aguardando atividades...</p>';
-    });
+    const clearBtn = document.getElementById('clear-notifications');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            if (crudNotifications) {
+                crudNotifications.innerHTML = '<p class="no-notifications">Aguardando atividades...</p>';
+            }
+        });
+    }
     
-    document.getElementById('toggle-sound').addEventListener('click', function() {
-        soundEnabled = !soundEnabled;
-        this.textContent = soundEnabled ? '🔊 Som: ON' : '🔇 Som: OFF';
-    });
+    const toggleSoundBtn = document.getElementById('toggle-sound');
+    if (toggleSoundBtn) {
+        toggleSoundBtn.addEventListener('click', function() {
+            soundEnabled = !soundEnabled;
+            this.textContent = soundEnabled ? '🔊 Som: ON' : '🔇 Som: OFF';
+        });
+    }
+    
+    if (sendMessageBtn && chatInput) {
+        sendMessageBtn.addEventListener('click', function() {
+            const message = chatInput.value.trim();
+            if (message) {
+                socket.emit('send_message', {
+                    message: message,
+                    room: 'general'
+                });
+                chatInput.value = '';
+            }
+        });
+        
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessageBtn.click();
+            }
+        });
+    }
     
     // Carregar estatísticas iniciais
     updateStats();
@@ -516,27 +283,20 @@ document.addEventListener('DOMContentLoaded', function() {
             "Verificação automática de integridade dos dados",
             "Sincronização de dados em tempo real ativa",
             "Monitoramento de performance do sistema",
-            "Backup automático dos dados realizado",
-            "Cache do sistema otimizado",
-            "Conexões de banco de dados verificadas"
+            "Backup automático realizado com sucesso"
         ];
         
         const randomActivity = systemActivities[Math.floor(Math.random() * systemActivities.length)];
         
-        addCrudNotification({
-            message: randomActivity,
-            operation: "system",
-            entity: "sistema", 
-            timestamp: new Date().toLocaleTimeString(),
-            user: "Sistema"
-        });
-    }, 60000); // A cada 1 minuto
-    
-    // Simular estatísticas que mudam
-    setInterval(function() {
-        updateStats();
+        if (Math.random() > 0.7) { // 30% de chance de mostrar atividade
+            addCrudNotification({
+                message: randomActivity,
+                user: 'Sistema',
+                operation: 'system',
+                timestamp: new Date().toLocaleTimeString()
+            });
+        }
     }, 30000); // A cada 30 segundos
 });
 </script>
 {% endblock %}
-

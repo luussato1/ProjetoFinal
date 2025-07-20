@@ -25,7 +25,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not AuthController.usuario_logado() or not AuthController.is_admin():
-            flash("Acesso negado. Apenas administradores podem acessar esta página.", "error")
+            flash("Acesso negado. Esta área requer privilégios de administrador.", "error")
             return redirect(url_for("routes.home"))
         return f(*args, **kwargs)
     return decorated_function
@@ -39,7 +39,7 @@ def login():
         usuario = AuthController.autenticar(username, password)
         if usuario:
             AuthController.fazer_login(usuario)
-            flash(f"Bem-vindo, {usuario.nome_completo}!", "success")
+            flash(f"Bem-vindo, {usuario.nome_completo}! Acesso autorizado com sucesso.", "success")
             return redirect(url_for("routes.home"))
         else:
             return render_template("login.html", error="Usuário ou senha incorretos.")
@@ -49,7 +49,7 @@ def login():
 @routes.route("/logout")
 def logout():
     AuthController.fazer_logout()
-    flash("Logout realizado com sucesso!", "info")
+    flash("Sessão encerrada com sucesso. Volte sempre!", "info")
     return redirect(url_for("routes.login"))
 
 @routes.route("/admin")
@@ -69,6 +69,10 @@ def admin_panel():
 @routes.route("/")
 def home():
     return render_template("home.html", now=datetime.now())
+
+@routes.route("/demo")
+def demo():
+    return render_template("demo.html", now=datetime.now())
 
 @routes.route("/clientes")
 @login_required
@@ -144,7 +148,7 @@ def editar_cliente(cliente_id):
         clientes = ClienteController.listar()
         cliente = next((c for c in clientes if c["id"] == cliente_id), None)
         if cliente is None:
-            flash("Cliente não encontrado!", "error")
+            flash("Cliente não localizado no sistema.", "error")
             return redirect(url_for("routes.listar_clientes"))
         cliente_obj = Cliente(cliente["id"], cliente["nome"], cliente["email"], cliente["telefone"], cliente["endereco"])
         action_url = url_for("routes.editar_cliente", cliente_id=cliente_id)
@@ -225,7 +229,7 @@ def editar_animal(animal_id):
         animais = AnimalController.listar()
         animal = next((a for a in animais if a["id"] == animal_id), None)
         if animal is None:
-            flash("Animal não encontrado!", "error")
+            flash("Animal não localizado no sistema.", "error")
             return redirect(url_for("routes.listar_animais"))
         action_url = url_for("routes.editar_animal", animal_id=animal_id)
         return render_template("form_animal.html", animal=animal, action_url=action_url)
@@ -259,7 +263,7 @@ def adicionar_veterinario():
         "timestamp": datetime.now().strftime("%H:%M:%S"),
         "user": session.get("username", "Sistema")
         }, room="/")
-    flash("Veterinário adicionado com sucesso!", "success")
+    flash("Novo veterinário cadastrado com sucesso no sistema!", "success")
     return redirect(url_for("routes.listar_veterinarios"))
 
 @routes.route("/veterinarios/remover/<veterinario_id>")
@@ -304,7 +308,7 @@ def editar_veterinario(veterinario_id):
         veterinarios = VeterinarioController.listar()
         veterinario = next((v for v in veterinarios if v["id"] == veterinario_id), None)
         if veterinario is None:
-            flash("Veterinário não encontrado!", "error")
+            flash("Veterinário não localizado no sistema.", "error")
             return redirect(url_for("routes.listar_veterinarios"))
         action_url = url_for("routes.editar_veterinario", veterinario_id=veterinario_id)
         return render_template("form_veterinario.html", veterinario=veterinario, action_url=action_url)
@@ -391,7 +395,7 @@ def editar_consulta(consulta_id):
         consultas = ConsultaController.listar()
         consulta = next((c for c in consultas if c["id"] == consulta_id), None)
         if consulta is None:
-            flash("Consulta não encontrada!", "error")
+            flash("Consulta não localizada no sistema.", "error")
             return redirect(url_for("routes.listar_consultas"))
         action_url = url_for("routes.editar_consulta", consulta_id=consulta_id)
         return render_template("form_consulta.html", consulta=consulta, action_url=action_url)

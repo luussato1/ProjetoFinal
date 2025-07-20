@@ -17,10 +17,8 @@ class Usuario:
     
     @staticmethod
     def hash_password(password):
-        """Gera hash da senha usando SHA-256"""
         return hashlib.sha256(password.encode()).hexdigest()
     
     def check_password(self, password):
-        """Verifica se a senha fornecida corresponde ao hash armazenado"""
         return self.password == self.hash_password(password)
 

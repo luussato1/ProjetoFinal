@@ -14,6 +14,24 @@
   <section class="about-us">
     <h2>Sobre o PETBUS</h2>
     <p>No PETBUS, nossa missão é conectar tutores de pets a veterinários qualificados, oferecendo um sistema completo para gerenciamento de clientes, animais, consultas e muito mais. Facilitamos o cuidado com a saúde do seu melhor amigo, onde quer que você esteja.</p>
+    
+    <div class="about-highlights">
+      <div class="highlight-item">
+        <span class="highlight-icon">🏥</span>
+        <h4>Sistema Completo</h4>
+        <p>Gerenciamento integrado de clínicas veterinárias</p>
+      </div>
+      <div class="highlight-item">
+        <span class="highlight-icon">⚡</span>
+        <h4>Tempo Real</h4>
+        <p>Notificações e atualizações instantâneas via WebSocket</p>
+      </div>
+      <div class="highlight-item">
+        <span class="highlight-icon">🔐</span>
+        <h4>Seguro</h4>
+        <p>Proteção avançada de dados dos pacientes</p>
+      </div>
+    </div>
   </section>
 
   <section class="features">
@@ -39,17 +57,45 @@
         <h3>🔒 Sistema de Login Seguro</h3>
         <p>Acesso restrito e seguro para administradores e veterinários, garantindo a privacidade dos dados.</p>
       </div>
+      <div class="feature-item">
+        <h3>📊 Dashboard em Tempo Real</h3>
+        <p>Monitore atividades da clínica em tempo real com notificações instantâneas via WebSocket.</p>
+      </div>
     </div>
   </section>
 
   <section class="developers">
-    <h2>Desenvolvedores</h2>
-    <p>Este projeto foi desenvolvido com dedicação e carinho por:</p>
-    <ul>
-      <li>Arthur Luiz</li>
-      <li>Luiz Henrique</li>
-    </ul>
-    <p>Agradecemos especialmente ao <strong>Professor Henrique</strong> e aos <strong>monitores</strong> pelo apoio, orientação e conhecimento compartilhado durante todo o desenvolvimento do PETBUS. Sem vocês, este projeto não seria possível!</p>
+    <h2>Equipe de Desenvolvimento</h2>
+    <p>Este projeto acadêmico foi desenvolvido por estudantes de <strong>Engenharia de Software da UnB</strong>:</p>
+    
+    <div class="developers-grid">
+      <div class="developer-card">
+        <div class="developer-avatar">👨‍💻</div>
+        <h3>Arthur Luiz Silva Guedes</h3>
+        <p class="developer-id">Matrícula: 231028675</p>
+        <p class="developer-role">Estudante de Engenharia de Software</p>
+      </div>
+      
+      <div class="developer-card">
+        <div class="developer-avatar">👨‍💻</div>
+        <h3>Luiz Henrique Pessato da Mota</h3>
+        <p class="developer-id">Matrícula: 232028428</p>
+        <p class="developer-role">Estudante de Engenharia de Software</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Final -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Pronto para modernizar sua clínica veterinária?</h2>
+      <p>Junte-se a centenas de profissionais que já confiam no PETBUS para gerenciar suas clínicas!</p>
+      {% if not session.logged_in %}
+      <a href="{{ url_for('routes.login') }}" class="btn btn-primary btn-large">Começar Agora</a>
+      {% else %}
+      <a href="{{ url_for('routes.dashboard_realtime') }}" class="btn btn-primary btn-large">Ir para Dashboard</a>
+      {% endif %}
+    </div>
   </section>
 {% endblock %}
 

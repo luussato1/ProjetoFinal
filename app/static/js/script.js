@@ -1,4 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
+    initPageTransitions();
+    initFormValidation();
+    initLoadingStates();
+    initTooltips();
+    initWebSocketTracking();
+    
+    function initPageTransitions() {
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.5s ease-in-out';
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+        }, 100);
+    }
+    
+    function initLoadingStates() {
+        const buttons = document.querySelectorAll('.btn:not(.btn-logout)');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (this.closest('form')) {
+                    this.innerHTML = '<span>⏳ Processando...</span>';
+                    this.disabled = true;
+                    
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.innerHTML = this.dataset.originalText || 'Enviar';
+                    }, 3000);
+                }
+            });
+        });
+    }
+    
+    function initTooltips() {
+        const adminBtns = document.querySelectorAll('.admin-btn, .quick-btn');
+        adminBtns.forEach(btn => {
+            btn.setAttribute('title', 'Clique para acessar esta funcionalidade');
+        });
+    }
+
     const showNameButton = document.getElementById('show-name-btn');
     const nameDisplay = document.getElementById('name-display');
 
@@ -6,35 +44,39 @@ document.addEventListener('DOMContentLoaded', function() {
         showNameButton.addEventListener('click', function() {
             const myName = "Arthur Luiz e Luiz Henrique";
             nameDisplay.textContent = `Nossos nomes são: ${myName}`;
-            nameDisplay.style.color = '#D4748F';
+            nameDisplay.style.color = '#667eea';
             nameDisplay.style.fontWeight = 'bold';
             nameDisplay.style.marginTop = '10px';
         });
     }
 
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const requiredFields = form.querySelectorAll('input[required], select[required]');
-            let isValid = true;
+    function initFormValidation() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const requiredFields = form.querySelectorAll('input[required], select[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    field.classList.remove('error');
+                    
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = '#e74c3c';
+                        field.style.backgroundColor = '#ffeaea';
+                    } else {
+                        field.style.borderColor = '#667eea';
+                        field.style.backgroundColor = 'white';
+                    }
+                });
             
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.style.borderColor = '#e74c3c';
-                    field.style.backgroundColor = '#ffeaea';
-                } else {
-                    field.style.borderColor = '#ffcad4';
-                    field.style.backgroundColor = 'white';
+                if (!isValid) {
+                    e.preventDefault();
+                    showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
                 }
             });
-            
-            if (!isValid) {
-                e.preventDefault();
-                showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
-            }
         });
-    });
+    }
 
     const deleteLinks = document.querySelectorAll('a[href*="/remover/"]');
     deleteLinks.forEach(link => {
@@ -133,13 +175,33 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCounter();
         }
     });
+    
+    function initWebSocketTracking() {
+        const currentPath = window.location.pathname;
+        let entityType = null;
+        
+        if (currentPath.includes('/clientes')) {
+            entityType = 'clientes';
+        } else if (currentPath.includes('/animais')) {
+            entityType = 'animais';
+        } else if (currentPath.includes('/veterinarios')) {
+            entityType = 'veterinarios';
+        } else if (currentPath.includes('/consultas')) {
+            entityType = 'consultas';
+        }
+        
+        if (entityType && typeof socket !== 'undefined') {
+            setInterval(() => {
+                requestDataUpdate(entityType);
+            }, 30000);
+        }
+    }
 });
 
 if (typeof io !== 'undefined') {
     const socket = io();
     
     socket.on('connect', function() {
-        console.log('Conectado ao servidor WebSocket');
         socket.emit('join', {room: 'general'});
     });
     
@@ -263,24 +325,6 @@ if (typeof io !== 'undefined') {
             page: page || window.location.pathname
         });
     }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        trackUserActivity('page_load');
-        
-        const navLinks = document.querySelectorAll('nav a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                trackUserActivity('navigation', this.href);
-            });
-        });
-        
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function() {
-                trackUserActivity('form_submit', this.action);
-            });
-        });
-    });
 }
 
 function requestDataUpdate(entityType) {
@@ -288,24 +332,3 @@ function requestDataUpdate(entityType) {
         socket.emit('request_data_update', {entity_type: entityType});
     }
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    const currentPath = window.location.pathname;
-    let entityType = null;
-    
-    if (currentPath.includes('/clientes')) {
-        entityType = 'clientes';
-    } else if (currentPath.includes('/animais')) {
-        entityType = 'animais';
-    } else if (currentPath.includes('/veterinarios')) {
-        entityType = 'veterinarios';
-    } else if (currentPath.includes('/consultas')) {
-        entityType = 'consultas';
-    }
-    
-    if (entityType && typeof socket !== 'undefined') {
-        setInterval(() => {
-            requestDataUpdate(entityType);
-        }, 30000);
-    }
-});

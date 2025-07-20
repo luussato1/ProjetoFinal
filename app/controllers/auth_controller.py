@@ -1,8 +1,10 @@
 from models.database import Database
 from models.usuario import Usuario
 from flask import session
+import re
 
 class AuthController:
+    
     @staticmethod
     def listar_usuarios():
         db = Database.load()
@@ -18,14 +20,40 @@ class AuthController:
 
     @staticmethod
     def buscar_por_username(username):
+        if not username or not isinstance(username, str):
+            return None
+            
+        username = username.strip().lower()
+        
         usuarios = AuthController.listar_usuarios()
         for usuario_data in usuarios:
-            if usuario_data["username"] == username:
+            if usuario_data["username"].lower() == username:
                 return Usuario(**usuario_data)
         return None
 
     @staticmethod
+    def validar_credenciais(username, password):
+        if not username or not password:
+            return False, "Usuário e senha são obrigatórios"
+            
+        if len(username.strip()) < 3:
+            return False, "Nome de usuário deve ter pelo menos 3 caracteres"
+            
+        if len(password) < 3:
+            return False, "Senha deve ter pelo menos 3 caracteres"
+            
+        # Validação básica de caracteres especiais
+        if not re.match("^[a-zA-Z0-9_]+$", username.strip()):
+            return False, "Nome de usuário deve conter apenas letras, números e underscore"
+            
+        return True, ""
+
+    @staticmethod
     def autenticar(username, password):
+        valido, erro = AuthController.validar_credenciais(username, password)
+        if not valido:
+            return False, erro
+            
         usuario = AuthController.buscar_por_username(username)
         if usuario and usuario.check_password(password):
             return usuario
