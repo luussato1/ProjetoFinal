@@ -56,27 +56,23 @@
 
         <!-- Painel de Chat em Tempo Real -->
         <div class="dashboard-card">
-            <h3>💬 Chat do Sistema</h3>
+            <h3>💬 Atividades do Sistema</h3>
             <div id="chat-messages" class="chat-container">
                 <div class="chat-message system">
                     <span class="message-time">{{ now.strftime('%H:%M:%S') }}</span>
-                    <span class="message-text">Sistema iniciado</span>
+                    <span class="message-text">Dashboard iniciado</span>
                 </div>
-            </div>
-            <div class="chat-input-container">
-                <input type="text" id="chat-input" placeholder="Digite uma mensagem..." maxlength="200">
-                <button id="send-message" class="btn btn-primary">Enviar</button>
             </div>
         </div>
 
-        <!-- Painel de Usuários Online -->
+        <!-- Painel de Status -->
         <div class="dashboard-card">
-            <h3>👥 Usuários Ativos</h3>
+            <h3>� Status do Sistema</h3>
             <div id="active-users" class="users-container">
                 <div class="user-item">
                     <span class="user-indicator online">●</span>
                     <span class="user-name">{{ session.username or 'Usuário' }}</span>
-                    <span class="user-status">(Você)</span>
+                    <span class="user-status">Online</span>
                 </div>
             </div>
         </div>
@@ -84,10 +80,9 @@
 
     <!-- Painel de Controles -->
     <div class="dashboard-controls">
-        <button id="test-notification" class="btn btn-info">🧪 Testar Notificação</button>
-        <button id="clear-notifications" class="btn btn-warning">🗑️ Limpar Notificações</button>
-        <button id="toggle-sound" class="btn btn-secondary">🔊 Som: ON</button>
         <button id="refresh-stats" class="btn btn-secondary">🔄 Atualizar Dados</button>
+        <button id="clear-notifications" class="btn btn-warning">🗑️ Limpar Atividades</button>
+        <button id="toggle-sound" class="btn btn-secondary">🔊 Som: ON</button>
     </div>
 </div>
 
@@ -99,47 +94,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const socket = io();
     let soundEnabled = true;
     
-    // Elementos DOM com verificação
+    // Elementos DOM essenciais
     const connectionIndicator = document.getElementById('connection-indicator');
     const connectionText = document.getElementById('connection-text');
     const crudNotifications = document.getElementById('crud-notifications');
     const chatMessages = document.getElementById('chat-messages');
-    const chatInput = document.getElementById('chat-input');
-    const sendMessageBtn = document.getElementById('send-message');
-    
-    // Verificar se elementos essenciais existem
-    if (!connectionIndicator || !connectionText) {
-        console.warn('Elementos de conexão não encontrados, mas continuando...');
-    }
     
     // Eventos de conexão
     socket.on('connect', function() {
         if (connectionIndicator) connectionIndicator.className = 'status-connected';
         if (connectionText) connectionText.textContent = 'Conectado';
-        addChatMessage('Sistema', 'Conectado ao servidor em tempo real', 'system');
+        addSystemMessage('Conectado ao servidor em tempo real');
+        socket.emit('join', {room: '/'});
     });
     
     socket.on('disconnect', function() {
         if (connectionIndicator) connectionIndicator.className = 'status-disconnected';
         if (connectionText) connectionText.textContent = 'Desconectado';
-        addChatMessage('Sistema', 'Conexão perdida', 'system');
+        addSystemMessage('Conexão perdida');
     });
     
     // Receber notificações CRUD
     socket.on('crud_notification', function(data) {
         addCrudNotification(data);
         playNotificationSound();
-        updateStats();
     });
     
-    // Receber mensagens de chat
-    socket.on("new_message", function(data) {
-        addChatMessage(data.username, data.message, "user", data.timestamp);
-    });
-    
-    // Receber atualizações de dados
-    socket.on('data_update', function(data) {
-        updateEntityStats(data.entity_type, data.data.length);
+    // Receber atualizações de estatísticas
+    socket.on('stats_update', function(data) {
+        updateEntityStats('clientes', data.total_clientes);
+        updateEntityStats('animais', data.total_animais);
+        updateEntityStats('veterinarios', data.total_veterinarios);
+        updateEntityStats('consultas', data.total_consultas);
     });
     
     // Funções auxiliares
@@ -157,46 +143,41 @@ document.addEventListener('DOMContentLoaded', function() {
         
         crudNotifications.insertBefore(notificationDiv, crudNotifications.firstChild);
         
-        // Limitar a 15 atividades
+        // Limitar a 10 atividades
         const activities = crudNotifications.querySelectorAll('.activity-item');
-        if (activities.length > 15) {
+        if (activities.length > 10) {
             activities[activities.length - 1].remove();
         }
     }
     
-    function addChatMessage(username, message, type, timestamp = null) {
+    function addSystemMessage(message) {
         if (!chatMessages) return;
         
         const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${type}`;
-        const time = timestamp || new Date().toLocaleTimeString();
+        messageDiv.className = 'chat-message system';
         messageDiv.innerHTML = `
-            <span class="message-time">${time}</span>
-            <strong>${username}:</strong> ${message}
+            <span class="message-time">${new Date().toLocaleTimeString()}</span>
+            <span class="message-text">${message}</span>
         `;
         
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
-    function updateStats() {
-        // Solicitar atualização de dados para todas as entidades
-        socket.emit('request_data_update', {entity_type: 'clientes'});
-        socket.emit('request_data_update', {entity_type: 'animais'});
-        socket.emit('request_data_update', {entity_type: 'veterinarios'});
-        socket.emit('request_data_update', {entity_type: 'consultas'});
-    }
-    
     function updateEntityStats(entityType, count) {
         const statElement = document.getElementById(`total-${entityType}`);
         if (statElement) {
             statElement.textContent = count;
+            // Animação visual
+            statElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                statElement.style.transform = 'scale(1)';
+            }, 200);
         }
     }
     
     function playNotificationSound() {
         if (soundEnabled) {
-            // Criar um beep simples usando Web Audio API
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
@@ -208,30 +189,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 oscillator.frequency.value = 800;
                 oscillator.type = 'sine';
                 
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
                 
                 oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.3);
+                oscillator.stop(audioContext.currentTime + 0.2);
             } catch (e) {
-                console.log('Audio não suportado');
+                // Audio não suportado
             }
         }
     }
     
-    // Event listeners com verificação de existência
+    // Event listeners
     const refreshBtn = document.getElementById('refresh-stats');
     if (refreshBtn) {
-        refreshBtn.addEventListener('click', updateStats);
-    }
-    
-    const testNotBtn = document.getElementById('test-notification');
-    if (testNotBtn) {
-        testNotBtn.addEventListener('click', function() {
-            socket.emit('system_notification', {
-                message: 'Esta é uma notificação de teste do sistema!',
-                type: 'info'
-            });
+        refreshBtn.addEventListener('click', function() {
+            location.reload();
         });
     }
     
@@ -252,51 +225,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    if (sendMessageBtn && chatInput) {
-        sendMessageBtn.addEventListener('click', function() {
-            const message = chatInput.value.trim();
-            if (message) {
-                socket.emit('send_message', {
-                    message: message,
-                    room: 'general'
-                });
-                chatInput.value = '';
-            }
-        });
-        
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessageBtn.click();
-            }
-        });
-    }
-    
-    // Carregar estatísticas iniciais
-    updateStats();
-    
-    // Entrar na sala geral para chat
-    socket.emit('join', {room: 'general'});
-    
-    // Simular atividades do sistema periodicamente
-    setInterval(function() {
-        const systemActivities = [
-            "Verificação automática de integridade dos dados",
-            "Sincronização de dados em tempo real ativa",
-            "Monitoramento de performance do sistema",
-            "Backup automático realizado com sucesso"
-        ];
-        
-        const randomActivity = systemActivities[Math.floor(Math.random() * systemActivities.length)];
-        
-        if (Math.random() > 0.7) { // 30% de chance de mostrar atividade
-            addCrudNotification({
-                message: randomActivity,
-                user: 'Sistema',
-                operation: 'system',
-                timestamp: new Date().toLocaleTimeString()
-            });
-        }
-    }, 30000); // A cada 30 segundos
+    // Inicialização
+    addSystemMessage('Dashboard carregado com sucesso');
 });
 </script>
 {% endblock %}

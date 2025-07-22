@@ -1,23 +1,33 @@
-from flask_socketio import emit, join_room, leave_room
+from flask_socketio import emit, join_room
 from flask import session
 from websocket_manager import socketio
-import json
 from datetime import datetime
 
 @socketio.on("connect")
 def handle_connect():
-    emit("status", {"msg": f"{session.get('username', 'Usuário')} conectado ao sistema!"})
+    print(f"Cliente conectado: {session.get('username', 'Usuário')}")
+    emit("status", {"msg": f"{session.get('username', 'Usuário')} conectado!"})
+    join_room("/")
 
 @socketio.on("disconnect")
 def handle_disconnect():
+    print(f"Cliente desconectado: {session.get('username', 'Usuário')}")
+
+from flask_socketio import emit, join_room
+from websocket_manager import socketio
+
+@socketio.on('connect')
+def handle_connect():
     pass
 
-@socketio.on("join")
+@socketio.on('disconnect')
+def handle_disconnect():
+    pass
+
+@socketio.on('join')
 def handle_join(data):
-    room = data["room"]
+    room = data.get('room', '/')
     join_room(room)
-    username = session.get("username", "Usuário")
-    emit("status", {"msg": f"{username} entrou na sala {room}."}, room=room)
 
 @socketio.on("leave")
 def handle_leave(data):

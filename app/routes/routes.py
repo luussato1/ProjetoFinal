@@ -13,6 +13,14 @@ from websocket_manager import socketio
 
 routes = Blueprint("routes", __name__)
 
+def emit_stats_update():
+    socketio.emit("stats_update", {
+        "total_clientes": len(ClienteController.listar()),
+        "total_animais": len(AnimalController.listar()),
+        "total_veterinarios": len(VeterinarioController.listar()),
+        "total_consultas": len(ConsultaController.listar())
+    }, room='/')
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -96,13 +104,13 @@ def adicionar_cliente():
     ClienteController.adicionar(novo_cliente)
     
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} adicionou um novo cliente: {nome}",
-        "operation": "create",
-        "entity": "cliente",
-        "data": {"nome": nome, "email": email},
-        "timestamp": datetime.now().strftime("%H:%M:%S"),
-        "user": session.get("username", "Sistema")
+        "message": f"Novo cliente: {nome}",
+        "timestamp": datetime.now().strftime("%H:%M:%S")
         }, room='/')
+    
+    emit_stats_update()
+    
+    flash("Novo cliente cadastrado com sucesso no sistema!", "success")
     return redirect(url_for("routes.listar_clientes"))
 
 @routes.route("/clientes/remover/<cliente_id>")
@@ -115,13 +123,12 @@ def remover_cliente(cliente_id):
     ClienteController.remover(cliente_id)
     
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} removeu o cliente: {cliente_nome}",
-        "operation": "delete",
-        "entity": "cliente",
-        "data": {"id": cliente_id, "nome": cliente_nome},
-        "timestamp": datetime.now().strftime("%H:%M:%S"),
-        "user": session.get("username", "Sistema")
+        "message": f"Cliente removido: {cliente_nome}",
+        "timestamp": datetime.now().strftime("%H:%M:%S")
         }, room='/')
+    
+    emit_stats_update()
+    
     return redirect(url_for("routes.listar_clientes"))
 @routes.route("/clientes/editar/<cliente_id>", methods=["GET", "POST"])
 @login_required
@@ -136,12 +143,8 @@ def editar_cliente(cliente_id):
         ClienteController.atualizar(cliente_atualizado)
         
         socketio.emit("crud_notification", {
-            "message": f"{{session.get(\"username\", \"Usuário\")}} atualizou o cliente: {nome}",
-            "operation": "update",
-            "entity": "cliente",
-            "data": {"id": cliente_id, "nome": nome, "email": email},
-            "timestamp": datetime.now().strftime("%H:%M:%S"),
-            "user": session.get("username", "Sistema")
+            "message": f"Cliente atualizado: {nome}",
+            "timestamp": datetime.now().strftime("%H:%M:%S")
         }, room='/')
         return redirect(url_for("routes.listar_clientes"))
     else:
@@ -177,13 +180,10 @@ def adicionar_animal():
     novo_animal = Animal(str(uuid.uuid4()), nome, especie, id_cliente, raca, idade, peso)
     AnimalController.adicionar(novo_animal)
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} adicionou um novo animal: {nome}",
-        "operation": "create",
-        "entity": "animal",
-        "data": {"nome": nome, "especie": especie},
-        "timestamp": datetime.now().strftime("%H:%M:%S"),
-        "user": session.get("username", "Sistema")
+        "message": f"Novo animal: {nome}",
+        "timestamp": datetime.now().strftime("%H:%M:%S")
         }, room='/')
+    flash("Novo animal cadastrado com sucesso no sistema!", "success")
     return redirect(url_for("routes.listar_animais"))
 
 @routes.route("/animais/remover/<animal_id>")
@@ -195,7 +195,7 @@ def remover_animal(animal_id):
 
     AnimalController.remover(animal_id)
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} removeu o animal: {animal_nome}",
+        "message": f"{session.get('username', 'Usuário')} removeu o animal: {animal_nome}",
         "operation": "delete",
         "entity": "animal",
         "data": {"id": animal_id, "nome": animal_nome},
@@ -217,7 +217,7 @@ def editar_animal(animal_id):
         animal_atualizado = Animal(animal_id, nome, especie, id_cliente, raca, idade, peso)
         AnimalController.atualizar(animal_atualizado)
         socketio.emit("crud_notification", {
-            "message": f"{{session.get(\"username\", \"Usuário\")}} atualizou o animal: {nome}",
+            "message": f"{session.get('username', 'Usuário')} atualizou o animal: {nome}",
             "operation": "update",
             "entity": "animal",
             "data": {"id": animal_id, "nome": nome, "especie": especie},
@@ -256,7 +256,7 @@ def adicionar_veterinario():
     novo_veterinario = Veterinario(str(uuid.uuid4()), nome, crmv, especialidade, telefone, email)
     VeterinarioController.adicionar(novo_veterinario)
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} adicionou um novo veterinário: {nome}",
+        "message": f"{session.get('username', 'Usuário')} adicionou um novo veterinário: {nome}",
         "operation": "create",
         "entity": "veterinario",
         "data": {"nome": nome, "crmv": crmv},
@@ -275,7 +275,7 @@ def remover_veterinario(veterinario_id):
 
     VeterinarioController.remover(veterinario_id)
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} removeu o veterinário: {veterinario_nome}",
+        "message": f"{session.get('username', 'Usuário')} removeu o veterinário: {veterinario_nome}",
         "operation": "delete",
         "entity": "veterinario",
         "data": {"id": veterinario_id, "nome": veterinario_nome},
@@ -296,7 +296,7 @@ def editar_veterinario(veterinario_id):
         veterinario_atualizado = Veterinario(veterinario_id, nome, crmv, especialidade, telefone, email)
         VeterinarioController.atualizar(veterinario_atualizado)
         socketio.emit("crud_notification", {
-            "message": f"{{session.get(\"username\", \"Usuário\")}} atualizou o veterinário: {nome}",
+            "message": f"{session.get('username', 'Usuário')} atualizou o veterinário: {nome}",
             "operation": "update",
             "entity": "veterinario",
             "data": {"id": veterinario_id, "nome": nome, "crmv": crmv},
@@ -339,13 +339,14 @@ def adicionar_consulta():
     ConsultaController.adicionar(nova_consulta)
     
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} adicionou uma nova consulta",
+        "message": f"{session.get('username', 'Usuário')} adicionou uma nova consulta",
         "operation": "create",
         "entity": "consulta",
         "data": {"id_animal": id_animal, "id_veterinario": id_veterinario},
         "timestamp": datetime.now().strftime("%H:%M:%S"),
         "user": session.get("username", "Sistema")
         }, room='/')
+    flash("Nova consulta agendada com sucesso no sistema!", "success")
     return redirect(url_for("routes.listar_consultas"))
 
 @routes.route("/consultas/remover/<consulta_id>")
@@ -358,7 +359,7 @@ def remover_consulta(consulta_id):
     ConsultaController.remover(consulta_id)
     
     socketio.emit("crud_notification", {
-        "message": f"{{session.get(\"username\", \"Usuário\")}} removeu uma consulta",
+        "message": f"{session.get('username', 'Usuário')} removeu uma consulta",
         "operation": "delete",
         "entity": "consulta",
         "data": {"id": consulta_id},
@@ -383,7 +384,7 @@ def editar_consulta(consulta_id):
         ConsultaController.atualizar(consulta_atualizada)
         
         socketio.emit("crud_notification", {
-            "message": f"{{session.get(\"username\", \"Usuário\")}} atualizou uma consulta",
+            "message": f"{session.get('username', 'Usuário')} atualizou uma consulta",
             "operation": "update",
             "entity": "consulta",
             "data": {"id": consulta_id, "id_animal": id_animal},
@@ -400,11 +401,9 @@ def editar_consulta(consulta_id):
         action_url = url_for("routes.editar_consulta", consulta_id=consulta_id)
         return render_template("form_consulta.html", consulta=consulta, action_url=action_url)
 
-@routes.route("/dashboard_realtime")
+@routes.route("/dashboard")
 @login_required
 def dashboard_realtime():
-    from datetime import datetime, timedelta
-    
     stats = {
         "total_clientes": len(ClienteController.listar()),
         "total_animais": len(AnimalController.listar()),
@@ -412,34 +411,4 @@ def dashboard_realtime():
         "total_consultas": len(ConsultaController.listar())
     }
     
-    usuario = AuthController.usuario_atual()
-    
-    initial_activities = [
-        {
-            "time": datetime.now().strftime('%H:%M:%S'),
-            "text": "Dashboard carregado com sucesso",
-            "user": "Sistema",
-            "type": "system"
-        },
-        {
-            "time": (datetime.now() - timedelta(minutes=5)).strftime('%H:%M:%S'),
-            "text": f"Logou no sistema",
-            "user": usuario.get('username', 'Usuário') if usuario else 'Usuário',
-            "type": "info"
-        },
-        {
-            "time": (datetime.now() - timedelta(minutes=15)).strftime('%H:%M:%S'),
-            "text": "Monitoramento em tempo real ativo",
-            "user": "Sistema",
-            "type": "system"
-        }
-    ]
-    
-    socketio.emit("system_notification", {
-        "message": f"{usuario.get('username', 'Usuário') if usuario else 'Usuário'} acessou o dashboard em tempo real",
-        "type": "info",
-        "timestamp": datetime.now().strftime("%H:%M:%S"),
-        "user": session.get("username", "Sistema")
-    }, room="/")
-    
-    return render_template("realtime_dashboard.html", stats=stats, usuario=usuario, initial_activities=initial_activities)
+    return render_template("realtime_dashboard.html", stats=stats)

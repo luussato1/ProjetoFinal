@@ -4,7 +4,7 @@
             "id": "4a90c93d-e146-4551-b57e-4380f20e9b13",
             "nome": "Jo\u00e3o Silva",
             "email": "joao@email.com",
-            "telefone": "(11) 99999-9999",
+            "telefone": "(11) 9999-9998",
             "endereco": "Rua das Flores, 123 - S\u00e3o Paulo, SP"
         },
         {
@@ -13,6 +13,13 @@
             "email": "luizpessato002@gmail.com",
             "telefone": "(61) 98340-1641",
             "endereco": "shsn ch112 a"
+        },
+        {
+            "id": "78fca78f-4e0b-47f5-a08b-2d61820a065b",
+            "nome": "adada",
+            "email": "sadadadasdadsdda@gmail.com",
+            "telefone": "(61) 98234-4242",
+            "endereco": "shsn"
         }
     ],
     "animais": [
@@ -24,19 +31,49 @@
             "raca": "pintcher",
             "idade": 1,
             "peso": 1.0
+        },
+        {
+            "id": "e1411e93-879e-4e26-965f-11acab5c50d1",
+            "nome": "cu",
+            "especie": "cachorro",
+            "id_cliente": "2",
+            "raca": "pintcher2",
+            "idade": 2,
+            "peso": 2.0
+        },
+        {
+            "id": "f2f7eec4-f05e-477b-a6d6-d1a6fbc8cc6c",
+            "nome": "lulu",
+            "especie": "cachorro",
+            "id_cliente": "1",
+            "raca": "pintcher",
+            "idade": 1,
+            "peso": 1.0
         }
     ],
     "veterinarios": [
         {
             "id": "c3ef70cf-e355-4226-8857-78d01d0aa99b",
-            "nome": "Jo\u00e3o Silva",
+            "nome": "Jo\u00e3o Silva 2",
             "crmv": "1",
             "especialidade": "medico",
             "telefone": "(61) 98234-4242",
             "email": "addadaa@gmail.com"
         }
     ],
-    "consultas": [],
+    "consultas": [
+        {
+            "id": "7100e243-a927-47cc-84ad-f89167ab03f1",
+            "id_animal": "1",
+            "id_veterinario": "1",
+            "data_consulta": "32222-02-23T22:22",
+            "motivo": "a",
+            "diagnostico": "a",
+            "tratamento": "a",
+            "observacoes": "a",
+            "valor": 12.0
+        }
+    ],
     "usuarios": [
         {
             "id": "admin-001",

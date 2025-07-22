@@ -2,54 +2,39 @@ document.addEventListener('DOMContentLoaded', function() {
     initPageTransitions();
     initFormValidation();
     initLoadingStates();
-    initTooltips();
-    initWebSocketTracking();
+    initDeleteConfirmation();
+    initInputFormatting();
     
     function initPageTransitions() {
         document.body.style.opacity = '0';
-        document.body.style.transition = 'opacity 0.5s ease-in-out';
+        document.body.style.transition = 'opacity 0.3s ease-in-out';
         setTimeout(() => {
             document.body.style.opacity = '1';
-        }, 100);
+        }, 50);
     }
     
     function initLoadingStates() {
-        const buttons = document.querySelectorAll('.btn:not(.btn-logout)');
-        buttons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (this.closest('form')) {
-                    this.innerHTML = '<span>⏳ Processando...</span>';
-                    this.disabled = true;
-                    
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+                if (submitBtn) {
+                    // Usar setTimeout para garantir que o formulário seja enviado primeiro
                     setTimeout(() => {
-                        this.disabled = false;
-                        this.innerHTML = this.dataset.originalText || 'Enviar';
-                    }, 3000);
+                        submitBtn.innerHTML = '<span>⏳ Processando...</span>';
+                        submitBtn.disabled = true;
+                    }, 10);
+                    
+                    // Re-habilitar após 5 segundos caso algo dê errado
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = submitBtn.dataset.originalText || 'Salvar';
+                    }, 5000);
                 }
             });
         });
     }
     
-    function initTooltips() {
-        const adminBtns = document.querySelectorAll('.admin-btn, .quick-btn');
-        adminBtns.forEach(btn => {
-            btn.setAttribute('title', 'Clique para acessar esta funcionalidade');
-        });
-    }
-
-    const showNameButton = document.getElementById('show-name-btn');
-    const nameDisplay = document.getElementById('name-display');
-
-    if (showNameButton && nameDisplay) {
-        showNameButton.addEventListener('click', function() {
-            const myName = "Arthur Luiz e Luiz Henrique";
-            nameDisplay.textContent = `Nossos nomes são: ${myName}`;
-            nameDisplay.style.color = '#667eea';
-            nameDisplay.style.fontWeight = 'bold';
-            nameDisplay.style.marginTop = '10px';
-        });
-    }
-
     function initFormValidation() {
         const forms = document.querySelectorAll('form');
         forms.forEach(form => {
@@ -58,8 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 let isValid = true;
                 
                 requiredFields.forEach(field => {
-                    field.classList.remove('error');
-                    
                     if (!field.value.trim()) {
                         isValid = false;
                         field.style.borderColor = '#e74c3c';
@@ -72,20 +55,55 @@ document.addEventListener('DOMContentLoaded', function() {
             
                 if (!isValid) {
                     e.preventDefault();
-                    showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
+                    showMessage('Preencha todos os campos obrigatórios.', 'error');
                 }
             });
         });
     }
-
-    const deleteLinks = document.querySelectorAll('a[href*="/remover/"]');
-    deleteLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (!confirm('Tem certeza que deseja excluir este item?')) {
-                e.preventDefault();
-            }
+    
+    function initDeleteConfirmation() {
+        const deleteLinks = document.querySelectorAll('a[href*="/remover/"]');
+        deleteLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (!confirm('Tem certeza que deseja excluir este item?')) {
+                    e.preventDefault();
+                }
+            });
         });
-    });
+    }
+    
+    function initInputFormatting() {
+        // Formatação de telefone
+        const phoneInputs = document.querySelectorAll('input[name="telefone"]');
+        phoneInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                    if (value.length < 14) {
+                        value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                    }
+                    e.target.value = value;
+                }
+            });
+        });
+        
+        // Validação de email
+        const emailInputs = document.querySelectorAll('input[type="email"]');
+        emailInputs.forEach(input => {
+            input.addEventListener('blur', function(e) {
+                const email = e.target.value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (email && !emailRegex.test(email)) {
+                    e.target.style.borderColor = '#e74c3c';
+                    showMessage('Email inválido.', 'error');
+                } else {
+                    e.target.style.borderColor = '#ffcad4';
+                }
+            });
+        });
+    }
 
     function showMessage(text, type = 'info') {
         const existingMessage = document.querySelector('.message');
